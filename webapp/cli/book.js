@@ -20,7 +20,7 @@ program
                 name: opts.name,
                 authorId: +opts.authorId
             }
-        }).then(d => console.log(JSON.stringify(d.data)), console.error)
+        }).then(d => console.log(JSON.stringify(d.data)), e => console.error(e.message))
 });
 
 program
@@ -30,8 +30,8 @@ program
             url: cfg.baseUrl + '/books',
             method: 'GET',
         }).then(d => {
-            d.data._embedded.books.forEach(author => console.log(JSON.stringify(author)));
-        }, console.error)
+            d.data.forEach(author => console.log(JSON.stringify(author)));
+        }, e => console.error(e.message))
 });
 
 module.exports = program

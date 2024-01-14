@@ -1,41 +1,38 @@
 package ru.education.entities;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
+import ru.education.CustomList;
+import ru.education.repositories.CommonRepository;
 
-import java.util.List;
+import java.util.Random;
 
-@Entity
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
-@Builder
-public class Book {
-    @Id
-    @GeneratedValue()
-    private Long id;
+public class Book implements CommonRepository.IReference {
+    private Long id = new Random().nextLong(0L, 100L);
 
     @NotNull
-    @Column(unique = true)
     private String name;
 
     @NotNull
-    @ManyToOne
     private Author author;
 
-    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
-    @JsonManagedReference
-    List<BookRental> allRentals = List.of();
+    CustomList<BookRental> allRentals = new CustomList<>();
 
     public Long getHoursInUse() {
         if (allRentals == null) return 0L;
 
-        return allRentals
-                .stream()
-                .mapToLong(BookRental::getHoursInUse)
-                .reduce(0L, Long::sum);
+        var sum = 0L;
+
+        var current = allRentals.iterator();
+
+        while (current.hasNext()) {
+            var next = current.next();
+            sum += next.getHoursInUse();
+        }
+
+        return sum;
     }
 }

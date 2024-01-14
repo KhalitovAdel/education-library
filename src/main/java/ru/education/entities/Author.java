@@ -1,24 +1,16 @@
 package ru.education.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import ru.education.repositories.CommonRepository;
 
-@Entity
-@AllArgsConstructor
-@NoArgsConstructor
+import java.util.Random;
+
 @Getter
 @Setter
-@Builder
-public class Author {
-    @Id
-    @GeneratedValue
-    private Long id;
+public class Author implements CommonRepository.IReference {
+    private Long id = new Random().nextLong(0L, 100L);
 
     @NotNull
-    @Column(length = 255)
     private String name;
 }

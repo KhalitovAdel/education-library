@@ -1,31 +1,19 @@
 package ru.education.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import ru.education.repositories.CommonRepository;
 
 import java.time.Duration;
 import java.util.Date;
+import java.util.Random;
 
-@Entity
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
-@Builder
-@EntityListeners(AuditingEntityListener.class)
-public class BookRental {
-    @Id
-    @GeneratedValue
-    private Long id;
+public class BookRental implements CommonRepository.IReference {
+    private Long id = new Random().nextLong(0L, 100L);
 
     @NotNull
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "book_id")
-    @JsonBackReference
     private Book book;
 
     @NotNull
@@ -34,9 +22,7 @@ public class BookRental {
     @NotNull
     private Date endRentalDate;
 
-    @CreatedDate
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private Date createdAt;
+    private Date createdAt = new Date();
 
     public boolean isExpire() {
         return endRentalDate.after(new Date());
